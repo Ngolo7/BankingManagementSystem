@@ -1,4 +1,7 @@
 import React from "react";
+import LoanForm from "../components/LoanForm";
+import LoanStatus from "../components/LoanStatus";
+
 const HomePage = () => {
   return (
     <div className="container mx-auto p-6">
