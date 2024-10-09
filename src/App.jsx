@@ -5,13 +5,16 @@ import LoginPage from "./pages/loginPage"; // Corrected the casing of the file n
 
 const App = () => {
   return (
-    <Router>
-      ,
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={auth ? <HomePage /> : <LoginPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 };
 
