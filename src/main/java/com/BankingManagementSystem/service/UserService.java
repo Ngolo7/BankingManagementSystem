@@ -30,7 +30,6 @@ public class UserService {
         user.setUsername(userDTO.getUsername());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));  // Encode password
         user.setRole(userDTO.getRole());  // Set role (USER or ADMIN)
-
         userRepository.save(user);  // Save the user to the database
     }
 

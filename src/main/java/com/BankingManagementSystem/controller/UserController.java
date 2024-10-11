@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -43,22 +44,28 @@ public class UserController {
     }
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody UserDTO userDTO) {
+        System.out.println("Login attempt for: " + userDTO.getUsername());
         // Fetch the user by username from the database
         Optional<User> optionalUser = userService.getUserByUsername(userDTO.getUsername());
 
         // Check if the user exists
         if (optionalUser.isEmpty()) {
+            System.out.println("User not found: " + userDTO.getUsername());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
 
-        // Get the user and validate the password manually
+        // Get the user and validate the password
         User user = optionalUser.get();
+        System.out.println("User found. Checking password...");
+
         if (!passwordEncoder.matches(userDTO.getPassword(), user.getPassword())) {
+            System.out.println("Password mismatch for user: " + userDTO.getUsername());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
 
         // Generate JWT token if authentication is successful
         String token = jwtUtil.generateToken(userDTO.getUsername());
+        System.out.println("JWT token generated for user: " + userDTO.getUsername());
 
         // Create a UserDTO for the response
         UserDTO responseUserDTO = mapToUserDTO(user);
@@ -67,7 +74,8 @@ public class UserController {
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("user", responseUserDTO);  // Include the UserDTO
         responseBody.put("token", token);  // Include the JWT token
-
+        // Log successful login
+        System.out.println("Login successful for user: " + userDTO.getUsername());
         // Return the response with user info and token
         return ResponseEntity.ok(responseBody);
     }
