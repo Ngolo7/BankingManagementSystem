@@ -1,52 +1,89 @@
 import React, { useEffect, useState } from "react";
 import { getLoanApplications, approveLoan } from "../services/LoanService";
+import { useAuth } from "../utils/useAuth";
 
 const AdminPanel = () => {
-  const [loans, setLoans] = useState([]);
+  const { auth } = useAuth(); // Access authentication state
+  const [loans, setLoans] = useState([]); // Initialize loans state to store loan data
+  const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
     const fetchLoans = async () => {
       try {
         const response = await getLoanApplications();
-        setLoans(response.data);
+        setLoans(response.data); // Set the loans data from the response
+        setLoading(false); // Set loading to false when the data is fetched
       } catch (error) {
         console.error("Error fetching loan applications:", error);
+        setLoading(false); // Stop loading even in case of error
       }
     };
+
     fetchLoans();
   }, []);
 
-  const handleApprove = async (loanId) => {
+  const handleLoanAction = async (loanId, status) => {
     try {
-      await approveLoan(loanId);
-      alert("Loan approved.");
-      // Refresh loan applications
+      await approveLoan(loanId, status);
+      alert(`Loan ${status.toLowerCase()}ed.`);
+      // Refresh loans after the action
+      const response = await getLoanApplications();
+      setLoans(response.data);
     } catch (error) {
-      console.error("Error approving loan:", error);
+      alert(`Error ${status.toLowerCase()}ing loan.`);
     }
   };
 
+  if (loading) {
+    return <p>Loading loan applications...</p>; // Display a loading message
+  }
+
   return (
-    <div className="p-6 bg-base-100 shadow-md rounded-lg">
+    <div className="bg-white p-6 shadow-md rounded-lg">
       <h2 className="text-xl font-bold mb-4">Admin Loan Panel</h2>
-      <ul>
-        {loans.map((loan) => (
-          <li key={loan.id} className="mb-4">
-            <p>
-              <strong>User:</strong> {loan.userId}
-            </p>
-            <p>
-              <strong>Amount:</strong> ${loan.amount}
-            </p>
-            <button
-              onClick={() => handleApprove(loan.id)}
-              className="btn btn-primary mt-2"
-            >
-              Approve Loan
-            </button>
-          </li>
-        ))}
-      </ul>
+      <div>
+        <h3 className="text-lg font-bold">Admin Profile:</h3>
+        <p>
+          <strong>Username:</strong> {auth.user.username}
+        </p>
+        <p>
+          <strong>Role:</strong> {auth.user.role}
+        </p>
+      </div>
+
+      {loans.length > 0 ? (
+        <ul className="mt-4">
+          {loans.map((loan) => (
+            <li key={loan.loanId} className="mb-4">
+              <p>
+                <strong>User:</strong> {loan.userId}
+              </p>
+              <p>
+                <strong>Amount:</strong> ${loan.amount}
+              </p>
+              <p>
+                <strong>Status:</strong> {loan.status}
+              </p>
+              <div className="flex space-x-4">
+                <button
+                  onClick={() => handleLoanAction(loan.loanId, "Approved")}
+                  className="btn btn-success mt-2"
+                >
+                  Approve
+                </button>
+                <button
+                  onClick={() => handleLoanAction(loan.loanId, "Rejected")}
+                  className="btn btn-danger mt-2"
+                >
+                  Reject
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No loan applications found.</p>
+      )}
     </div>
   );
 };

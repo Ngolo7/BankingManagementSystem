@@ -14,7 +14,8 @@ export const login = async (credentials) => {
       throw new Error("Login failed: " + response.status);
     }
 
-    return await response.json(); // Parse and return the response JSON
+    // Return parsed response JSON directly
+    return await response.json(); // Ensure this is the correct structure from your API
   } catch (error) {
     console.error("Login failed:", error);
     throw error; // Rethrow the error to handle it in the calling function
