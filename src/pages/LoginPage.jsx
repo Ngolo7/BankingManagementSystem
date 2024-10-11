@@ -1,60 +1,38 @@
 import React, { useState } from "react";
+import { login } from "../api"; // API import
+import { useAuth } from "../utils/useAuth"; // Auth context
 
 const LoginPage = () => {
   const { setAuth } = useAuth();
-  const [credentials, setCredentials] = useState({
-    username: "",
-    password: "",
-  });
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleChange = (e) => {
-    setCredentials({ ...credentials, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await login(credentials);
-      setAuth(response.data.token);
+      const response = await login(username, password);
+      setAuth(response);
     } catch (error) {
       console.error("Login failed:", error);
     }
   };
 
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">Login</h1>
-      <form
-        onSubmit={handleSubmit}
-        className="bg-base-100 p-6 shadow-md rounded-lg"
-      >
-        <div className="mb-4">
-          <label className="block text-sm font-bold mb-2">Username</label>
-          <input
-            type="text"
-            name="username"
-            value={credentials.username}
-            onChange={handleChange}
-            className="input input-bordered w-full"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-bold mb-2">Password</label>
-          <input
-            type="password"
-            name="password"
-            value={credentials.password}
-            onChange={handleChange}
-            className="input input-bordered w-full"
-            required
-          />
-        </div>
-        <button type="submit" className="btn btn-primary">
-          Login
-        </button>
-      </form>
-    </div>
+    <form onSubmit={handleLogin}>
+      <input
+        type="text"
+        placeholder="Username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <button type="submit">Login</button>
+    </form>
   );
 };
 
