@@ -27,9 +27,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
+                .cors()  // Enable CORS support
+                .and()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/user/register", "/api/user/register/admin", "/api/user/login").permitAll()  // Public access
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")  // Only Admin can access /api/admin/**
+                .requestMatchers("/api/loans/admin/approval/**").hasRole("ADMIN")
                 .anyRequest().authenticated()  // All other requests require authentication
                 .and()
                 .authenticationManager(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)))

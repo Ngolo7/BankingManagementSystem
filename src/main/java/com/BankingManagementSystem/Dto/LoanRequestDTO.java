@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 public class LoanRequestDTO {
     private String loanType;
     private Double amount;
+    private Double interestRate;
+    private Double totalAmount;
     private int tenure;
 
     // Getters and Setters

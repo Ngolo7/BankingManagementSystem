@@ -26,12 +26,21 @@ public class LoanService {
 
         Loan loan = new Loan();
         loan.setLoanType(loanRequestDTO.getLoanType());
-        loan.setAmount(loanRequestDTO.getAmount()); // Now using double
+        loan.setAmount(loanRequestDTO.getAmount()); // Principal amount
         loan.setTenure(loanRequestDTO.getTenure());
-        loan.setInterestRate(calculateInterestRate(loanRequestDTO.getAmount(), loanRequestDTO.getTenure())); // Now using double
+        loan.setInterestRate(loanRequestDTO.getInterestRate()); // Custom interest rate
+
+        // Calculate total interest based on the principal, interest rate, and tenure
+        double interestAmount = calculateInterestAmount(loanRequestDTO.getAmount(), loanRequestDTO.getInterestRate(), loanRequestDTO.getTenure());
+
+        // Store the total amount (principal + interest)
+        double totalAmount = loanRequestDTO.getAmount() + interestAmount;
+        loan.setTotalAmount(totalAmount);  // Assuming totalAmount field exists in Loan entity
+
         loan.setStatus("Pending");
         loan.setUser(user);
 
+        // Save the loan
         Loan savedLoan = loanRepository.save(loan);
         return mapToLoanDTO(savedLoan);
     }
@@ -49,23 +58,28 @@ public class LoanService {
         Loan updatedLoan = loanRepository.save(loan);
         return mapToLoanDTO(updatedLoan);
     }
+    // Method to fetch all loan applications for admin
+    public List<LoanDTO> getAllLoans() {
+        List<Loan> loans = loanRepository.findAll(); // Fetch all loans from the repository
+        return loans.stream().map(this::mapToLoanDTO).collect(Collectors.toList());
+    }
 
     private LoanDTO mapToLoanDTO(Loan loan) {
         LoanDTO loanDTO = new LoanDTO();
         loanDTO.setUserId(loan.getUser().getId());
         loanDTO.setLoanId(loan.getLoanId());
         loanDTO.setLoanType(loan.getLoanType());
-        loanDTO.setAmount(loan.getAmount()); // Now using double
-        loanDTO.setInterestRate(loan.getInterestRate()); // Now using double
+        loanDTO.setAmount(loan.getAmount()); // Principal amount
+        loanDTO.setInterestRate(loan.getInterestRate()); // Interest rate
+        loanDTO.setTotalAmount(loan.getTotalAmount());  // Total amount (Principal + Interest)
         loanDTO.setTenure(loan.getTenure());
         loanDTO.setStatus(loan.getStatus());
         return loanDTO;
     }
 
-    // Simple interest calculation now uses double instead of BigDecimal
-    private double calculateInterestRate(double amount, int tenure) {
-        double annualInterestRate = 0.05;
-        int years = tenure / 12;
-        return amount * annualInterestRate * years;
+    // Method to calculate total interest amount based on principal, interest rate, and tenure
+    private double calculateInterestAmount(double amount, double interestRate, int tenure) {
+        // Assuming tenure is in years. If tenure is in months, divide by 12.
+        return (amount * interestRate * tenure) / 100;  // Interest rate is divided by 100 to convert to decimal
     }
 }

@@ -4,6 +4,7 @@ import com.BankingManagementSystem.Dto.LoanDTO;
 import com.BankingManagementSystem.Dto.LoanRequestDTO;
 import com.BankingManagementSystem.service.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,8 +26,15 @@ public class LoanController {
         return loanService.getLoansByUserId(userId);
     }
 
-    @PutMapping("/approval/{loanId}")
+    @PutMapping("/admin/approval/{loanId}")
     public LoanDTO approveLoan(@PathVariable Long loanId, @RequestParam String status) {
+        System.out.println("Loan ID: " + loanId + ", Status: " + status);
         return loanService.updateLoanStatus(loanId, status);
+    }
+    // **Admin-Only Endpoint** to get all loan applications
+    @GetMapping("/admin/loans")
+    public ResponseEntity<List<LoanDTO>> getAllLoanApplications() {
+        List<LoanDTO> loans = loanService.getAllLoans();
+        return ResponseEntity.ok(loans);
     }
 }
