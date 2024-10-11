@@ -7,7 +7,10 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState(null); // Set default value for auth (null)
 
-  const logout = () => setAuth(null);
+  const logout = () => {
+    setAuth(null);
+    localStorage.removeItem("token");
+  };
 
   return (
     <AuthContext.Provider value={{ auth, setAuth, logout }}>

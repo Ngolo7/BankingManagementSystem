@@ -6,14 +6,29 @@ const LoginPage = () => {
   const { setAuth } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await login(username, password);
-      setAuth(response);
-    } catch (error) {
-      console.error("Login failed:", error);
+      // Call the login API function
+      const response = await login({ username, password });
+
+      // Check the response structure and make sure 'token' is present
+      if (response && response.token) {
+        const { token, user } = response;
+
+        setAuth({ token, user }); // Set authentication state
+        localStorage.setItem("token", token); // Store the JWT token in localStorage
+
+        setError(""); // Clear any previous error
+        alert("Login successful!");
+      } else {
+        throw new Error("Token is missing in the response");
+      }
+    } catch (err) {
+      setError("Login failed. Please check your credentials.");
+      console.error("Login failed:", err); // Log the error
     }
   };
 
@@ -32,6 +47,7 @@ const LoginPage = () => {
         onChange={(e) => setPassword(e.target.value)}
       />
       <button type="submit">Login</button>
+      {error && <p style={{ color: "red" }}>{error}</p>}
     </form>
   );
 };
