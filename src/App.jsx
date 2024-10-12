@@ -11,6 +11,7 @@ import LoanStatus from "./components/LoanStatus";
 import DashBoard from "./components/DashBoard";
 import ProfilePage from "./pages/ProfilePage";
 import LoginPage from "./pages/loginPage";
+import AdminPanel from "./components/AdminPanel";
 import { AuthProvider, useAuth } from "./utils/useAuth";
 import AdminPage from "./pages/AdminPage";
 
@@ -31,7 +32,7 @@ const App = () => {
           <Route
             path="/"
             element={
-              <ProtectedRoute allowedRoles={["USER", "ADMIN"]}>
+              <ProtectedRoute>
                 <HomePage />
               </ProtectedRoute>
             }
@@ -39,7 +40,7 @@ const App = () => {
           <Route
             path="/profile"
             element={
-              <ProtectedRoute allowedRoles={["USER", "ADMIN"]}>
+              <ProtectedRoute>
                 <ProfilePage />
               </ProtectedRoute>
             }
@@ -53,17 +54,9 @@ const App = () => {
             }
           />
           <Route
-            path="/loanForm"
-            element={
-              <ProtectedRoute allowedRoles={["USER"]}>
-                <LoanForm />
-              </ProtectedRoute>
-            }
-          />
-          <Route
             path="/loanStatus"
             element={
-              <ProtectedRoute allowedRoles={["USER"]}>
+              <ProtectedRoute>
                 <LoanStatus />
               </ProtectedRoute>
             }
@@ -71,7 +64,7 @@ const App = () => {
           <Route
             path="/dashboard"
             element={
-              <ProtectedRoute allowedRoles={["USER"]}>
+              <ProtectedRoute>
                 <DashBoard />
               </ProtectedRoute>
             }
@@ -81,6 +74,22 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <AdminPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/panel"
+            element={
+              <ProtectedRoute>
+                <AdminPanel />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashBoard />
               </ProtectedRoute>
             }
           />

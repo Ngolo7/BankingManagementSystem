@@ -37,55 +37,113 @@ const AdminPanel = () => {
   if (loading) {
     return <p>Loading loan applications...</p>; // Display a loading message
   }
+  // Separate loans by status
+  const pendingLoans = loans.filter((loan) => loan.status === "Pending");
+  const approvedLoans = loans.filter((loan) => loan.status === "Approved");
+  const rejectedLoans = loans.filter((loan) => loan.status === "Rejected");
 
   return (
-    <div className="bg-white p-6 shadow-md rounded-lg">
-      <h2 className="text-xl font-bold mb-4">Admin Loan Panel</h2>
-      <div>
-        <h3 className="text-lg font-bold">Admin Profile:</h3>
-        <p>
-          <strong>Username:</strong> {auth.user.username}
-        </p>
-        <p>
-          <strong>Role:</strong> {auth.user.role}
-        </p>
-      </div>
-
-      {loans.length > 0 ? (
-        <ul className="mt-4">
-          {loans.map((loan) => (
-            <li key={loan.loanId} className="mb-4">
-              <p>
-                <strong>User:</strong> {loan.userId}
-              </p>
-              <p>
-                <strong>Amount:</strong> ${loan.amount}
-              </p>
-              <p>
-                <strong>Status:</strong> {loan.status}
-              </p>
-              <div className="flex space-x-4">
-                <button
-                  onClick={() => handleLoanAction(loan.loanId, "Approved")}
-                  className="btn btn-success mt-2"
-                >
-                  Approve
-                </button>
-                <button
-                  onClick={() => handleLoanAction(loan.loanId, "Rejected")}
-                  className="btn btn-danger mt-2"
-                >
-                  Reject
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
+    <div className="bg-gray-900 p-6 rounded-lg">
+      {/* Pending Loan Applications */}
+      <h3 className="text-lg font-bold mt-6 text-gray-400">
+        Pending Loan Applications:
+      </h3>
+      {pendingLoans.length > 0 ? (
+        <div className="min-w-full bg-gray-800 text-white rounded-lg mb-6">
+          <table className="min-w-full">
+            <thead>
+              <tr>
+                <th className="py-2 px-4 text-left">User</th>
+                <th className="py-2 px-4 text-left">Amount</th>
+                <th className="py-2 px-4 text-left">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pendingLoans.map((loan) => (
+                <tr key={loan.loanId} className="hover:bg-gray-700">
+                  <td className="py-2 px-4">{loan.userId}</td>
+                  <td className="py-2 px-4">${loan.amount}</td>
+                  <td className="py-2 px-4 flex space-x-2">
+                    <button
+                      onClick={() => handleLoanAction(loan.loanId, "Approved")}
+                      className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg"
+                    >
+                      Approve
+                    </button>
+                    <button
+                      onClick={() => handleLoanAction(loan.loanId, "Rejected")}
+                      className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
+                    >
+                      Reject
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : (
-        <p>No loan applications found.</p>
+        <p className="text-gray-400">No pending loan applications found.</p>
+      )}
+
+      {/* Approved Loan Applications */}
+      <h3 className="text-lg font-bold mt-6 text-gray-400">
+        Approved Loan Applications:
+      </h3>
+      {approvedLoans.length > 0 ? (
+        <div className="min-w-full bg-gray-800 text-white rounded-lg mb-6">
+          <table className="min-w-full">
+            <thead>
+              <tr>
+                <th className="py-2 px-4 text-left">User</th>
+                <th className="py-2 px-4 text-left">Amount</th>
+                <th className="py-2 px-4 text-left">Date Approved </th>
+              </tr>
+            </thead>
+            <tbody>
+              {approvedLoans.map((loan) => (
+                <tr key={loan.loanId} className="hover:bg-gray-700">
+                  <td className="py-2 px-4">{loan.userId}</td>
+                  <td className="py-2 px-4">${loan.amount}</td>
+                  <td className="py-2 px-4">{loan.approvalDate || "N/A"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p className="text-gray-400">No approved loan applications found.</p>
+      )}
+
+      {/* Rejected Loan Applications */}
+      <h3 className="text-lg font-bold mt-6 text-gray-400">
+        Rejected Loan Applications:
+      </h3>
+      {rejectedLoans.length > 0 ? (
+        <div className="min-w-full bg-gray-800 text-white rounded-lg mb-6">
+          <table className="min-w-full">
+            <thead>
+              <tr>
+                <th className="py-2 px-4 text-left">User</th>
+                <th className="py-2 px-4 text-left">Amount</th>
+                <th className="py-2 px-4 text-left">Date Rejected</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rejectedLoans.map((loan) => (
+                <tr key={loan.loanId} className="hover:bg-gray-700">
+                  <td className="py-2 px-4">{loan.userId}</td>
+                  <td className="py-2 px-4">${loan.amount}</td>
+                  <td className="py-2 px-4">{loan.rejectionDate || "N/A"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p className="text-gray-400">No rejected loan applications found.</p>
       )}
     </div>
   );
 };
-
 export default AdminPanel;

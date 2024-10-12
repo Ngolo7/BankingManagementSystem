@@ -7,38 +7,34 @@ const ProfilePage = () => {
   const navigate = useNavigate();
   const { auth } = useAuth(); // Get auth data from context
 
-  console.log("Auth state in ProfilePage:", auth);
-
-  // Check if auth and user data exist
-  if (!auth || !auth.user) {
-    return <p>Loading profile...</p>; // Show loading state if no user data is available
-  }
+  // Dummy profile picture URL (you can use any random image source)
+  const profilePictureUrl =
+    auth.user.profilePicture || "https://picsum.photos/150"; // Random image from Picsum
 
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">Welcome, {auth.user.username}</h1>
-      <div className="flex flex-col space-y-4">
-        <button
-          onClick={() => navigate("/loanForm")}
-          className="btn btn-primary"
-        >
-          Apply for a Loan
-        </button>
-        <button
-          onClick={() => navigate("/loanStatus")}
-          className="btn btn-secondary"
-        >
-          Check Loan Status
-        </button>
-        <button
-          onClick={() => navigate("/dashboard")}
-          className="btn btn-accent"
-        >
-          View Dashboard
-        </button>
+    <div className="container mx-auto p-6 flex">
+      <div className="flex-shrink-0 mr-6">
+        <img
+          src={profilePictureUrl}
+          alt="Profile"
+          className="w-32 h-32 rounded-full"
+        />
+      </div>
+
+      <div className="flex flex-col justify-center items-start flex-1">
+        <div className="flex flex-col justify-center items-start flex-1">
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
+            <h1 className="text-3xl font-bold mb-4 text-white">Profile</h1>
+            <p className="text-gray-300">
+              <strong>Username:</strong> {auth.user.username}
+            </p>
+            <p className="text-gray-300">
+              <strong>Role:</strong> {auth.user.role}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
-
 export default ProfilePage;

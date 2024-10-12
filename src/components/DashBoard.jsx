@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { getLoanStatus } from "../services/LoanService"; // Adjust the service to fetch the correct loan data for the dashboard
 import { useAuth } from "../utils/useAuth"; // Authentication hook
+import { useNavigate } from "react-router-dom"; // Navigation hook
 
 const DashBoard = () => {
   const { auth } = useAuth(); // Get user authentication data
   const [loans, setLoans] = useState([]); // State to hold loan data
   const [loading, setLoading] = useState(true); // Loading state to show loading message
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchLoanDetails = async () => {
@@ -24,18 +26,27 @@ const DashBoard = () => {
       fetchLoanDetails(); // Fetch loan details when the component mounts
     }
   }, [auth]);
+  const handleClose = () => {
+    navigate("/"); // Navigate to home or main page
+  };
 
   if (loading) {
     return <p>Loading loan details...</p>; // Show loading message while waiting for data
   }
 
   return (
-    <div className="p-6 bg-base-100 shadow-md rounded-lg">
+    <div className="p-6 bg-gray-900 text-white shadow-md rounded-lg">
       <h2 className="text-xl font-bold mb-4">Your Loan Details</h2>
+      <button
+        onClick={handleClose}
+        className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded mb-4"
+      >
+        Close Page
+      </button>
       {loans.length > 0 ? (
-        <ul>
+        <ul className="space-y-4">
           {loans.map((loan) => (
-            <li key={loan.loanId} className="mb-4">
+            <li key={loan.loanId} className="bg-gray-800 p-4 rounded-lg">
               <p>
                 <strong>Loan Type:</strong> {loan.loanType}
               </p>
@@ -54,11 +65,23 @@ const DashBoard = () => {
               <p>
                 <strong>Status:</strong> {loan.status}
               </p>
+              <p>
+                <strong>Approval Date:</strong>{" "}
+                {loan.approvalDate
+                  ? new Date(loan.approvalDate).toLocaleString()
+                  : "N/A"}
+              </p>
+              <p>
+                <strong>Rejection Date:</strong>{" "}
+                {loan.rejectionDate
+                  ? new Date(loan.rejectionDate).toLocaleString()
+                  : "N/A"}
+              </p>
             </li>
           ))}
         </ul>
       ) : (
-        <p>No loan application found.</p>
+        <p>No loan applications found.</p>
       )}
     </div>
   );

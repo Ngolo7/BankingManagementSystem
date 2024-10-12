@@ -35,7 +35,7 @@ const LoginPage = () => {
           navigate("/admin"); // Redirect to the Admin Panel for admin users
         } else {
           alert("Login successful!");
-          navigate("/profile"); // Redirect to the profile page for regular users
+          navigate("/"); // Redirect to the profile page for regular users
         }
       } else {
         throw new Error("Token or user data is missing in the response");
@@ -47,33 +47,34 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
+    <div className="flex justify-center items-center h-screen bg-gray-900">
       <form
         onSubmit={handleLogin}
-        className="w-full max-w-sm bg-white p-6 rounded-lg shadow-md"
+        className="bg-gray-800 p-6 rounded-lg shadow-lg w-96"
       >
-        <h2 className="text-2xl font-bold mb-4">Login</h2>
+        <h2 className="text-2xl text-white font-bold mb-6">Login</h2>
         <input
           type="text"
           placeholder="Username"
           value={username}
-          onChange={(e) => setUsername(e.target.value)} // Update username state
-          className="input input-bordered w-full mb-4"
+          onChange={(e) => setUsername(e.target.value)}
+          className="input bg-gray-700 text-white w-full mb-4 p-2 rounded-lg"
           required
         />
         <input
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)} // Update password state
-          className="input input-bordered w-full mb-4"
+          onChange={(e) => setPassword(e.target.value)}
+          className="input bg-gray-700 text-white w-full mb-4 p-2 rounded-lg"
           required
         />
-        <button className="btn btn-primary w-full">Login</button>
+        <button className="w-full bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg">
+          Login
+        </button>
         {error && <p className="text-red-500 mt-4">{error}</p>}
       </form>
     </div>
   );
 };
-
 export default LoginPage;

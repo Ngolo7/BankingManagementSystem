@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { applyForLoan } from "../services/LoanService";
 import { useAuth } from "../utils/useAuth"; // To access the authenticated user
+import { useNavigate } from "react-router-dom";
 
 const LoanForm = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ const LoanForm = () => {
   });
 
   const { auth } = useAuth(); // Get the authenticated user's details (including userId)
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -27,10 +29,22 @@ const LoanForm = () => {
       alert("Error applying for loan.");
     }
   };
+  const handleClose = () => {
+    navigate("/"); // Navigate to home or main page
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded-lg">
+    <form
+      onSubmit={handleSubmit}
+      className="bg-gray-800 p-6 shadow-lg rounded-lg text-white"
+    >
       <h2 className="text-xl font-bold mb-4">Apply for a Loan</h2>
+      <button
+        onClick={handleClose}
+        className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded mb-4"
+      >
+        Close Page
+      </button>
       <div className="mb-4">
         <label className="block text-sm font-bold mb-2">Loan Type</label>
         <input
@@ -38,7 +52,7 @@ const LoanForm = () => {
           name="loanType"
           value={formData.loanType}
           onChange={handleChange}
-          className="input input-bordered w-full"
+          className="input bg-gray-700 text-white p-2 w-full rounded-lg"
           required
         />
       </div>
@@ -49,7 +63,7 @@ const LoanForm = () => {
           name="amount"
           value={formData.amount}
           onChange={handleChange}
-          className="input input-bordered w-full"
+          className="input bg-gray-700 text-white p-2 w-full rounded-lg"
           required
         />
       </div>
@@ -60,7 +74,7 @@ const LoanForm = () => {
           name="tenure"
           value={formData.tenure}
           onChange={handleChange}
-          className="input input-bordered w-full"
+          className="input bg-gray-700 text-white p-2 w-full rounded-lg"
           required
         />
       </div>
@@ -73,11 +87,14 @@ const LoanForm = () => {
           name="interestRate"
           value={formData.interestRate}
           onChange={handleChange}
-          className="input input-bordered w-full"
+          className="input bg-gray-700 text-white p-2 w-full rounded-lg"
           required
         />
       </div>
-      <button type="submit" className="btn btn-primary">
+      <button
+        type="submit"
+        className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg"
+      >
         Submit Application
       </button>
     </form>
