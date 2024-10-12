@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 
 @Entity
 @Data
@@ -20,6 +22,13 @@ public class Loan {
     private Double totalAmount;
     private int tenure;
     private String status;
+
+    @Temporal(TemporalType.DATE)
+    private Date approvalDate;
+
+    @Temporal(TemporalType.DATE)
+    private Date rejectionDate;
+
 
     @ManyToOne
     @JoinColumn(name = "user_id")

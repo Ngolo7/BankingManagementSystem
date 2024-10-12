@@ -9,6 +9,7 @@ import com.BankingManagementSystem.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,16 +65,42 @@ public class LoanService {
         return loans.stream().map(this::mapToLoanDTO).collect(Collectors.toList());
     }
 
-    private LoanDTO mapToLoanDTO(Loan loan) {
+
+    public Loan approveLoan(Long loanId) {
+        Loan loan = loanRepository.findById(loanId).orElse(null);
+        if (loan != null) {
+            loan.setStatus("Approved");
+            loan.setApprovalDate(new Date());
+            loan.setRejectionDate(null);
+            loanRepository.save(loan);
+        }
+        return loan;
+    }
+
+
+    public Loan rejectLoan(Long loanId) {
+        Loan loan = loanRepository.findById(loanId).orElse(null);
+        if (loan != null) {
+            loan.setStatus("Rejected");
+            loan.setRejectionDate(new Date());
+            loan.setApprovalDate(null);
+            loanRepository.save(loan);
+        }
+        return loan;
+    }
+
+    public LoanDTO mapToLoanDTO(Loan loan) {
         LoanDTO loanDTO = new LoanDTO();
         loanDTO.setUserId(loan.getUser().getId());
         loanDTO.setLoanId(loan.getLoanId());
         loanDTO.setLoanType(loan.getLoanType());
-        loanDTO.setAmount(loan.getAmount()); // Principal amount
-        loanDTO.setInterestRate(loan.getInterestRate()); // Interest rate
-        loanDTO.setTotalAmount(loan.getTotalAmount());  // Total amount (Principal + Interest)
+        loanDTO.setAmount(loan.getAmount());
+        loanDTO.setInterestRate(loan.getInterestRate());
+        loanDTO.setTotalAmount(loan.getTotalAmount());
         loanDTO.setTenure(loan.getTenure());
         loanDTO.setStatus(loan.getStatus());
+        loanDTO.setApprovalDate(loan.getApprovalDate());
+        loanDTO.setRejectionDate(loan.getRejectionDate());
         return loanDTO;
     }
 

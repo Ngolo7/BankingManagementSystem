@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -19,6 +20,9 @@ public class LoanDTO {
     private int tenure;
     private String status;
     private Long userId;
+    private Date approvalDate;
+    private Date rejectionDate;
+
 
     // Getters and Setters
 }
